@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ShadowsSample.Cameras;
+using ShadowsSample.Components;
 
 namespace ShadowsSample
 {
@@ -13,12 +15,19 @@ namespace ShadowsSample
         private Model _model;
         private Matrix[] _modelTransforms;
 
+        private GameSettingsComponent _gameSettings;
+
+        private MeshRenderer _meshRenderer;
+
         public ShadowsGame()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 800;
+
+            //graphics.SynchronizeWithVerticalRetrace = false;
+            //IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
         }
@@ -29,11 +38,14 @@ namespace ShadowsSample
                 Window.ClientBounds.Width / (float) Window.ClientBounds.Height,
                 0.25f, 250.0f);
 
-            _camera.Position = new Vector3(40.0f, 5.0f, 5.0f);
-            _camera.YRotation = MathHelper.PiOver2;
+            _camera.Position = new Vector3(20.0f, 5.0f, 65.0f);
+            _camera.YRotation = MathHelper.PiOver4;
             _camera.XRotation = 0;
 
             Mouse.SetPosition(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+
+            Components.Add(new FramesPerSecondComponent(this));
+            Components.Add(_gameSettings = new GameSettingsComponent(this));
 
             base.Initialize();
         }
@@ -47,10 +59,14 @@ namespace ShadowsSample
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _model = Content.Load<Model>("models/Street environment_V01");
+            _model = Content.Load<Model>("models/village_house_obj");
 
             _modelTransforms = new Matrix[_model.Bones.Count];
             _model.CopyAbsoluteBoneTransformsTo(_modelTransforms);
+
+            _meshRenderer = new MeshRenderer(
+                GraphicsDevice, _gameSettings,
+                Content, _model);
         }
 
         /// <summary>
@@ -72,12 +88,14 @@ namespace ShadowsSample
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            base.Update(gameTime);
+
             // Apply keyboard input.
 
             var keyboardState = Keyboard.GetState();
 
-            var deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
-            float moveSpeed = 15.0f * deltaSeconds;
+            var deltaMilliseconds = (float) gameTime.ElapsedGameTime.TotalMilliseconds;
+            float moveSpeed = 0.025f * deltaMilliseconds;
 
             if (keyboardState.IsKeyDown(Keys.LeftShift))
                 moveSpeed *= 0.25f;
@@ -101,20 +119,31 @@ namespace ShadowsSample
             // Apply mouse input.
 
             var mouseState = Mouse.GetState();
-            float rotationSpeed = 0.180f * deltaSeconds;
+            float rotationSpeed = 0.0003f * deltaMilliseconds;
             if (mouseState.RightButton == ButtonState.Pressed)
             {
                 var xRot = _camera.XRotation;
                 var yRot = _camera.YRotation;
-                xRot += ((Window.ClientBounds.Height / 2) - mouseState.Y) * rotationSpeed;
-                yRot += ((Window.ClientBounds.Width / 2) - mouseState.X) * rotationSpeed;
+                var deltaX = ((Window.ClientBounds.Height / 2) - mouseState.Y) * rotationSpeed;
+                var deltaY = ((Window.ClientBounds.Width / 2) - mouseState.X) * rotationSpeed;
+                xRot += deltaX;
+                yRot += deltaY;
                 _camera.XRotation = xRot;
                 _camera.YRotation = yRot;
             }
 
             Mouse.SetPosition(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
 
-            base.Update(gameTime);
+            // Animate light.
+
+            if (_gameSettings.AnimateLight)
+            {
+                var rotationY = deltaMilliseconds * 0.00025f;
+                var rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, rotationY);
+                var lightDirection = _gameSettings.LightDirection;
+                lightDirection = Vector3.Transform(lightDirection, rotation);
+                _gameSettings.LightDirection = lightDirection;
+            }
         }
 
         /// <summary>
@@ -123,19 +152,12 @@ namespace ShadowsSample
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            _meshRenderer.RenderShadowMap(GraphicsDevice, _camera, Matrix.Identity);
+
+            GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            foreach (var mesh in _model.Meshes)
-            {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.World = _modelTransforms[mesh.ParentBone.Index];
-                    effect.View = _camera.View;
-                    effect.Projection = _camera.Projection;
-                }
-
-                mesh.Draw();
-            }
+            _meshRenderer.Render(GraphicsDevice, _camera, Matrix.Identity);
 
             base.Draw(gameTime);
         }

@@ -14,6 +14,8 @@
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <MonoGameContentBuilderExe>
     </MonoGameContentBuilderExe>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -24,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -33,15 +36,26 @@
     <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FirstPersonCamera.cs" />
+    <Compile Include="Cameras\Camera.cs" />
+    <Compile Include="Cameras\OrthographicCamera.cs" />
+    <Compile Include="Cameras\PerspectiveCamera.cs" />
+    <Compile Include="Components\FramesPerSecondComponent.cs" />
+    <Compile Include="Cameras\FirstPersonCamera.cs" />
+    <Compile Include="Components\GameSettingsComponent.cs" />
+    <Compile Include="Effects\MeshEffect.cs" />
+    <Compile Include="MeshRenderer.cs" />
+    <Compile Include="Effects\ShadowMapEffect.cs" />
     <Compile Include="ShadowsGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\SamplerStateUtility.cs" />
+    <Compile Include="Util\Vector4Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -51,24 +65,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\effects\Mesh.fx" />
+    <Content Include="Content\effects\ShadowMap.fx" />
     <Content Include="Content\models\readme.txt" />
-    <Content Include="Content\textures\building 01_c.tga" />
-    <Content Include="Content\textures\building 06_ c .tga" />
-    <Content Include="Content\textures\building 06_ c.tga" />
-    <Content Include="Content\textures\building03_c.tga" />
-    <Content Include="Content\textures\building05 _c.tga" />
-    <Content Include="Content\textures\building_016_c.tga" />
-    <Content Include="Content\textures\building_025_c.tga" />
-    <Content Include="Content\textures\Building_V01_C.png" />
-    <Content Include="Content\textures\Building_V02_C.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\models\Street environment_V01.mtl" />
-    <None Include="Content\models\Street environment_V01.obj" />
+    <None Include="app.config" />
+    <None Include="Content\GameFont.spritefont" />
+    <Content Include="Content\models\village_house_obj.mtl" />
+    <Content Include="Content\models\village_house_obj.obj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
