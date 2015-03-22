@@ -29,6 +29,11 @@ namespace ShadowsSample
         private readonly ShadowMapEffect _shadowMapEffect;
         private readonly MeshEffect _meshEffect;
 
+        public Texture2D ShadowMap
+        {
+            get { return _shadowMap; }
+        }
+
         public MeshRenderer(
             GraphicsDevice graphicsDevice, GameSettingsComponent settings,
             ContentManager contentManager, Model scene)
@@ -74,6 +79,7 @@ namespace ShadowsSample
 
             // Set the shadow map as the render target
             graphicsDevice.SetRenderTarget(_shadowMap);
+            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
             // Render the meshes to each cascade.
             for (var cascadeIdx = 0; cascadeIdx < NumCascades; ++cascadeIdx)
@@ -92,7 +98,7 @@ namespace ShadowsSample
 
                 var invViewProj = Matrix.Invert(camera.ViewProjection);
                 for (var i = 0; i < 8; ++i)
-                    Vector3.Transform(ref _frustumCorners[i], ref invViewProj, out _frustumCorners[i]);
+                    _frustumCorners[i] = Vector3.Transform(_frustumCorners[i], invViewProj);
 
                 // Get the corners of the current cascade slice of the view frustum
                 for (var i = 0; i < 4; ++i)
@@ -308,6 +314,8 @@ namespace ShadowsSample
 
         public void Render(GraphicsDevice graphicsDevice, Camera camera, Matrix worldMatrix)
         {
+            // Render scene.
+
             graphicsDevice.BlendState = BlendState.Opaque;
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
@@ -317,6 +325,8 @@ namespace ShadowsSample
             _meshEffect.VisualizeCascades = _settings.VisualizeCascades;
             _meshEffect.FilterAcrossCascades = _settings.FilterAcrossCascades;
             _meshEffect.FilterSize = _settings.FixedFilterSize;
+            _meshEffect.Bias = _settings.Bias;
+            _meshEffect.OffsetScale = _settings.OffsetScale;
 
             _meshEffect.ViewProjection = camera.ViewProjection;
             _meshEffect.CameraPosWS = camera.Position;

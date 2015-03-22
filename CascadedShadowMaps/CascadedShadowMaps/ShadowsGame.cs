@@ -8,8 +8,8 @@ namespace ShadowsSample
 {
     public class ShadowsGame : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private readonly GraphicsDeviceManager graphics;
+        private SpriteBatch _spriteBatch;
 
         private FirstPersonCamera _camera;
         private Model _model;
@@ -56,8 +56,7 @@ namespace ShadowsSample
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _model = Content.Load<Model>("models/village_house_obj");
 
@@ -158,6 +157,12 @@ namespace ShadowsSample
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _meshRenderer.Render(GraphicsDevice, _camera, Matrix.Identity);
+
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_meshRenderer.ShadowMap,
+                new Rectangle(Window.ClientBounds.Width - 10 - 400, 10, 400, 100),
+                Color.White);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

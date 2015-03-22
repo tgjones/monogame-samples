@@ -13,6 +13,8 @@ namespace ShadowsSample.Effects
         private readonly EffectParameter _cascadeSplitsParameter;
         private readonly EffectParameter _cascadeOffsetsParameter;
         private readonly EffectParameter _cascadeScalesParameter;
+        private readonly EffectParameter _biasParameter;
+        private readonly EffectParameter _offsetScaleParameter;
         private readonly EffectParameter _lightDirectionParameter;
         private readonly EffectParameter _lightColorParameter;
         private readonly EffectParameter _diffuseColorParameter;
@@ -29,6 +31,8 @@ namespace ShadowsSample.Effects
         public float[] CascadeSplits { get; private set; }
         public Vector4[] CascadeOffsets { get; private set; }
         public Vector4[] CascadeScales { get; private set; }
+        public float Bias { get; set; }
+        public float OffsetScale { get; set; }
         public Vector3 LightDirection { get; set; }
         public Vector3 LightColor { get; set; }
         public Vector3 DiffuseColor { get; set; }
@@ -45,6 +49,8 @@ namespace ShadowsSample.Effects
             _cascadeSplitsParameter = _innerEffect.Parameters["CascadeSplits"];
             _cascadeOffsetsParameter = _innerEffect.Parameters["CascadeOffsets"];
             _cascadeScalesParameter = _innerEffect.Parameters["CascadeScales"];
+            _biasParameter = _innerEffect.Parameters["Bias"];
+            _offsetScaleParameter = _innerEffect.Parameters["OffsetScale"];
             _lightDirectionParameter = _innerEffect.Parameters["LightDirection"];
             _lightColorParameter = _innerEffect.Parameters["LightColor"];
             _diffuseColorParameter = _innerEffect.Parameters["DiffuseColor"];
@@ -69,6 +75,8 @@ namespace ShadowsSample.Effects
             _cascadeSplitsParameter.SetValue(new Vector4(CascadeSplits[0], CascadeSplits[1], CascadeSplits[2], CascadeSplits[3]));
             _cascadeOffsetsParameter.SetValue(CascadeOffsets);
             _cascadeScalesParameter.SetValue(CascadeScales);
+            _biasParameter.SetValue(Bias);
+            _offsetScaleParameter.SetValue(OffsetScale);
             _lightDirectionParameter.SetValue(LightDirection);
             _lightColorParameter.SetValue(LightColor);
             _diffuseColorParameter.SetValue(DiffuseColor);

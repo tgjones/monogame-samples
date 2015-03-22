@@ -37,6 +37,8 @@ namespace ShadowsSample.Components
         {
             LightDirection = Vector3.Normalize(new Vector3(1, 1, 1));
             LightColor = new Vector3(3, 3, 3);
+            Bias = 0.005f;
+            OffsetScale = 0.0f;
         }
 
         protected override void LoadContent()
