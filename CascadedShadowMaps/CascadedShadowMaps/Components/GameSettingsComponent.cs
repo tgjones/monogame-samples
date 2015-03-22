@@ -15,6 +15,7 @@ namespace ShadowsSample.Components
 
         public bool AnimateLight;
         public Vector3 LightDirection;
+        public Vector3 LightColor;
         public FixedFilterSize FixedFilterSize;
         public bool VisualizeCascades;
         public bool StabilizeCascades;
@@ -34,6 +35,8 @@ namespace ShadowsSample.Components
         public GameSettingsComponent(Game game)
             : base(game)
         {
+            LightDirection = Vector3.Normalize(new Vector3(1, 1, 1));
+            LightColor = new Vector3(3, 3, 3);
         }
 
         protected override void LoadContent()

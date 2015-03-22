@@ -323,6 +323,9 @@ namespace ShadowsSample
 
             _meshEffect.ShadowMap = _shadowMap;
 
+            _meshEffect.LightDirection = _settings.LightDirection;
+            _meshEffect.LightColor = _settings.LightColor;
+
             // Draw all meshes.
             foreach (var mesh in _scene.Meshes)
                 foreach (var meshPart in mesh.MeshParts)

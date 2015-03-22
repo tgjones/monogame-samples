@@ -13,6 +13,8 @@ namespace ShadowsSample.Effects
         private readonly EffectParameter _cascadeSplitsParameter;
         private readonly EffectParameter _cascadeOffsetsParameter;
         private readonly EffectParameter _cascadeScalesParameter;
+        private readonly EffectParameter _lightDirectionParameter;
+        private readonly EffectParameter _lightColorParameter;
         private readonly EffectParameter _diffuseColorParameter;
         private readonly EffectParameter _worldParameter;
         private readonly EffectParameter _viewProjectionParameter;
@@ -27,6 +29,8 @@ namespace ShadowsSample.Effects
         public float[] CascadeSplits { get; private set; }
         public Vector4[] CascadeOffsets { get; private set; }
         public Vector4[] CascadeScales { get; private set; }
+        public Vector3 LightDirection { get; set; }
+        public Vector3 LightColor { get; set; }
         public Vector3 DiffuseColor { get; set; }
         public Matrix World { get; set; }
         public Matrix ViewProjection { get; set; }
@@ -41,6 +45,8 @@ namespace ShadowsSample.Effects
             _cascadeSplitsParameter = _innerEffect.Parameters["CascadeSplits"];
             _cascadeOffsetsParameter = _innerEffect.Parameters["CascadeOffsets"];
             _cascadeScalesParameter = _innerEffect.Parameters["CascadeScales"];
+            _lightDirectionParameter = _innerEffect.Parameters["LightDirection"];
+            _lightColorParameter = _innerEffect.Parameters["LightColor"];
             _diffuseColorParameter = _innerEffect.Parameters["DiffuseColor"];
             _worldParameter = _innerEffect.Parameters["World"];
             _viewProjectionParameter = _innerEffect.Parameters["ViewProjection"];
@@ -63,6 +69,8 @@ namespace ShadowsSample.Effects
             _cascadeSplitsParameter.SetValue(new Vector4(CascadeSplits[0], CascadeSplits[1], CascadeSplits[2], CascadeSplits[3]));
             _cascadeOffsetsParameter.SetValue(CascadeOffsets);
             _cascadeScalesParameter.SetValue(CascadeScales);
+            _lightDirectionParameter.SetValue(LightDirection);
+            _lightColorParameter.SetValue(LightColor);
             _diffuseColorParameter.SetValue(DiffuseColor);
             _worldParameter.SetValue(World);
             _viewProjectionParameter.SetValue(ViewProjection);
