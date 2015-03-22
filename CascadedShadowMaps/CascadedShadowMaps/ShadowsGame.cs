@@ -160,7 +160,7 @@ namespace ShadowsSample
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_meshRenderer.ShadowMap,
-                new Rectangle(Window.ClientBounds.Width - 10 - 400, 10, 400, 100),
+                new Rectangle(Window.ClientBounds.Width - 10 - 800, 10, 800, 200),
                 Color.White);
             _spriteBatch.End();
 

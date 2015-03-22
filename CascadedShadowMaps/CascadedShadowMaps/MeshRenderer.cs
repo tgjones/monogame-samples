@@ -101,9 +101,14 @@ namespace ShadowsSample
                     _frustumCorners[i] = Vector4.Transform(_frustumCorners[i], invViewProj).ToVector3();
 
                 // Get the corners of the current cascade slice of the view frustum
+                var centralRay = Vector3.Normalize(
+                    ((_frustumCorners[4] + _frustumCorners[5] + _frustumCorners[6] + _frustumCorners[7]) / 4.0f)
+                    - ((_frustumCorners[0] + _frustumCorners[1] + _frustumCorners[2] + _frustumCorners[3]) / 4.0f));
                 for (var i = 0; i < 4; ++i)
                 {
                     var cornerRay = _frustumCorners[i + 4] - _frustumCorners[i];
+                    //var nearCornerRay = cornerRay * Vector3.Dot(Vector3.Normalize(cornerRay), centralRay * prevSplitDist);
+                    //var farCornerRay = cornerRay * Vector3.Dot(Vector3.Normalize(cornerRay), centralRay * splitDist);
                     var nearCornerRay = cornerRay * prevSplitDist;
                     var farCornerRay = cornerRay * splitDist;
                     _frustumCorners[i + 4] = _frustumCorners[i] + farCornerRay;
@@ -114,7 +119,7 @@ namespace ShadowsSample
                 var frustumCenter = Vector3.Zero;
                 for (var i = 0; i < 8; ++i)
                     frustumCenter = frustumCenter + _frustumCorners[i];
-                frustumCenter *= 1.0f / 8.0f;
+                frustumCenter /= 8.0f;
 
                 // Pick the up vector to use for the light camera
                 var upDir = camera.Right;
@@ -186,11 +191,11 @@ namespace ShadowsSample
                     var shadowMatrixTemp = shadowCamera.ViewProjection;
                     var shadowOrigin = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
                     shadowOrigin = Vector4.Transform(shadowOrigin, shadowMatrixTemp);
-                    shadowOrigin = shadowOrigin * (ShadowMapSize / 2.0f);
+                    shadowOrigin = shadowOrigin * (ShadowMapSize * NumCascades / 2.0f);
 
                     var roundedOrigin = Vector4Utility.Round(shadowOrigin);
                     var roundOffset = roundedOrigin - shadowOrigin;
-                    roundOffset = roundOffset * (2.0f / ShadowMapSize);
+                    roundOffset = roundOffset * (2.0f / ShadowMapSize * NumCascades);
                     roundOffset.Z = 0.0f;
                     roundOffset.W = 0.0f;
 
@@ -276,7 +281,7 @@ namespace ShadowsSample
             var shadowCameraPos = frustumCenter + _settings.LightDirection * -0.5f;
 
             // Come up with a new orthographic camera for the shadow caster
-            var shadowCamera = new OrthographicCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, -1.0f);
+            var shadowCamera = new OrthographicCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, 1.0f);
             shadowCamera.SetLookAt(shadowCameraPos, frustumCenter, upDir);
 
             var texScaleBias = Matrix.CreateScale(0.5f, -0.5f, 1.0f);

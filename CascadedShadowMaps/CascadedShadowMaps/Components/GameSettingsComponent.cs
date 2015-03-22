@@ -41,7 +41,7 @@ namespace ShadowsSample.Components
             OffsetScale = 0.0f;
 
             StabilizeCascades = true;
-            VisualizeCascades = false;
+            VisualizeCascades = true;
 
             SplitDistance0 = 0.05f;
             SplitDistance1 = 0.15f;

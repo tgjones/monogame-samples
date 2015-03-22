@@ -10,6 +10,11 @@ VSOutput VSShadowMap(float3 position : SV_Position)
 {
     VSOutput output;
     output.position = mul(float4(position, 1), WorldViewProjection);
+
+    // Note: if MonoGame had RasterizerState.DepthClipEnable, we wouldn't need to do this.
+    // "Pancake" depths so that objects behind the near plane will still be rasterized.
+    output.position.z = max(output.position.z, 0.0f);
+
     output.depth = output.position.zw;
     return output;
 }
