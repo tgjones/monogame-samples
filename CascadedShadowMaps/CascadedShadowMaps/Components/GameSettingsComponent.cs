@@ -35,10 +35,18 @@ namespace ShadowsSample.Components
         public GameSettingsComponent(Game game)
             : base(game)
         {
-            LightDirection = Vector3.Normalize(new Vector3(1, 1, 1));
+            LightDirection = Vector3.Normalize(new Vector3(1, 1, -1));
             LightColor = new Vector3(3, 3, 3);
             Bias = 0.005f;
             OffsetScale = 0.0f;
+
+            StabilizeCascades = true;
+            VisualizeCascades = false;
+
+            SplitDistance0 = 0.05f;
+            SplitDistance1 = 0.15f;
+            SplitDistance2 = 0.50f;
+            SplitDistance3 = 1.0f;
         }
 
         protected override void LoadContent()

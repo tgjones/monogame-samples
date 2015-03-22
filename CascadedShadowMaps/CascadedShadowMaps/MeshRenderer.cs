@@ -98,7 +98,7 @@ namespace ShadowsSample
 
                 var invViewProj = Matrix.Invert(camera.ViewProjection);
                 for (var i = 0; i < 8; ++i)
-                    _frustumCorners[i] = Vector3.Transform(_frustumCorners[i], invViewProj);
+                    _frustumCorners[i] = Vector4.Transform(_frustumCorners[i], invViewProj).ToVector3();
 
                 // Get the corners of the current cascade slice of the view frustum
                 for (var i = 0; i < 4; ++i)
@@ -152,7 +152,7 @@ namespace ShadowsSample
                     var maxes = new Vector3(float.MinValue);
                     for (var i = 0; i < 8; ++i)
                     {
-                        var corner = Vector3.Transform(_frustumCorners[i], lightView);
+                        var corner = Vector4.Transform(_frustumCorners[i], lightView).ToVector3();
                         mins = Vector3.Min(mins, corner);
                         maxes = Vector3.Max(maxes, corner);
                     }
@@ -221,12 +221,12 @@ namespace ShadowsSample
                 // Calculate the position of the lower corner of the cascade partition, in the UV space
                 // of the first cascade partition
                 var invCascadeMat = Matrix.Invert(shadowMatrix);
-                var cascadeCorner = Vector3.Transform(Vector3.Zero, invCascadeMat);
-                cascadeCorner = Vector3.Transform(cascadeCorner, globalShadowMatrix);
+                var cascadeCorner = Vector4.Transform(Vector3.Zero, invCascadeMat).ToVector3();
+                cascadeCorner = Vector4.Transform(cascadeCorner, globalShadowMatrix).ToVector3();
 
                 // Do the same for the upper corner
-                var otherCorner = Vector3.Transform(Vector3.One, invCascadeMat);
-                otherCorner = Vector3.Transform(otherCorner, globalShadowMatrix);
+                var otherCorner = Vector4.Transform(Vector3.One, invCascadeMat).ToVector3();
+                otherCorner = Vector4.Transform(otherCorner, globalShadowMatrix).ToVector3();
 
                 // Calculate the scale and offset
                 var cascadeScale = Vector3.One / (otherCorner - cascadeCorner);
@@ -259,7 +259,7 @@ namespace ShadowsSample
             var frustumCenter = Vector3.Zero;
             for (var i = 0; i < 8; i++)
             {
-                Vector3.Transform(ref _frustumCorners[i], ref invViewProj, out _frustumCorners[i]);
+                _frustumCorners[i] = Vector4.Transform(_frustumCorners[i], invViewProj).ToVector3();
                 frustumCenter += _frustumCorners[i];
             }
 
@@ -276,7 +276,7 @@ namespace ShadowsSample
             var shadowCameraPos = frustumCenter + _settings.LightDirection * -0.5f;
 
             // Come up with a new orthographic camera for the shadow caster
-            var shadowCamera = new OrthographicCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, 1.0f);
+            var shadowCamera = new OrthographicCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, -1.0f);
             shadowCamera.SetLookAt(shadowCameraPos, frustumCenter, upDir);
 
             var texScaleBias = Matrix.CreateScale(0.5f, -0.5f, 1.0f);

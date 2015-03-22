@@ -105,6 +105,8 @@ float SampleShadowMapOptimizedPCF(float3 shadowPos,
 
     if (filterSize == 2)
     {
+        shadowPos.x /= NumCascades;
+        shadowPos.x += (1.0f / NumCascades) * cascadeIdx;
         return ShadowMap.SampleCmpLevelZero(ShadowSampler, shadowPos.xy, lightDepth);
     }
     else
@@ -246,6 +248,11 @@ float4 PSMeshVisualizeFalseFilterFalseFilterSizeFilter2x2(PSInput input) : COLOR
     return PSMesh(input, false, false, 2);
 }
 
+float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter2x2(PSInput input) : COLOR
+{
+    return PSMesh(input, true, false, 2);
+}
+
 // Techniques.
 
 technique VisualizeFalseFilterFalseFilterSizeFilter2x2
@@ -254,5 +261,14 @@ technique VisualizeFalseFilterFalseFilterSizeFilter2x2
     {
         VertexShader = compile vs_4_0 VSMesh();
         PixelShader = compile ps_4_0 PSMeshVisualizeFalseFilterFalseFilterSizeFilter2x2();
+    }
+}
+
+technique VisualizeTrueFilterFalseFilterSizeFilter2x2
+{
+    pass
+    {
+        VertexShader = compile vs_4_0 VSMesh();
+        PixelShader = compile ps_4_0 PSMeshVisualizeTrueFilterFalseFilterSizeFilter2x2();
     }
 }
