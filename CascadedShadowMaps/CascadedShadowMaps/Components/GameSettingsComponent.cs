@@ -65,7 +65,7 @@ namespace ShadowsSample.Components
             if (keyboardState.IsKeyDown(Keys.K) && !_lastKeyboardState.IsKeyDown(Keys.K))
             {
                 FixedFilterSize++;
-                if (FixedFilterSize > FixedFilterSize.Filter9x9)
+                if (FixedFilterSize > FixedFilterSize.Filter7x7)
                     FixedFilterSize = FixedFilterSize.Filter2x2;
             }
 
@@ -90,7 +90,6 @@ namespace ShadowsSample.Components
         Filter2x2,
         Filter3x3,
         Filter5x5,
-        Filter7x7,
-        Filter9x9
+        Filter7x7
     }
 }

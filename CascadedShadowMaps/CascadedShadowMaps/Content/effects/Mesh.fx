@@ -81,7 +81,7 @@ float SampleShadowMap(
     return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIdx), z);
 }
 
-float SampleShadowMapOptimizedPCF(float3 shadowPos, 
+float SampleShadowMapOptimizedPCF(float3 shadowPos,
     float3 shadowPosDX, float3 shadowPosDY,
     uint cascadeIdx, uint filterSize)
 {
@@ -97,9 +97,9 @@ float SampleShadowMapOptimizedPCF(float3 shadowPos,
 
     float2 uv = shadowPos.xy * shadowMapSize; // 1 unit - 1 texel
 
-    float2 shadowMapSizeInv = 1.0 / shadowMapSize;
+        float2 shadowMapSizeInv = 1.0 / shadowMapSize;
 
-    float2 baseUv;
+        float2 baseUv;
     baseUv.x = floor(uv.x + 0.5);
     baseUv.y = floor(uv.y + 0.5);
 
@@ -136,10 +136,81 @@ float SampleShadowMapOptimizedPCF(float3 shadowPos,
 
         return sum * 1.0f / 16;
     }
-    else
+    else if (filterSize == 5)
     {
-        // TODO
-        return 0.5f;
+        float uw0 = (4 - 3 * s);
+        float uw1 = 7;
+        float uw2 = (1 + 3 * s);
+
+        float u0 = (3 - 2 * s) / uw0 - 2;
+        float u1 = (3 + s) / uw1;
+        float u2 = s / uw2 + 2;
+
+        float vw0 = (4 - 3 * t);
+        float vw1 = 7;
+        float vw2 = (1 + 3 * t);
+
+        float v0 = (3 - 2 * t) / vw0 - 2;
+        float v1 = (3 + t) / vw1;
+        float v2 = t / vw2 + 2;
+
+        sum += uw0 * vw0 * SampleShadowMap(baseUv, u0, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw0 * SampleShadowMap(baseUv, u1, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw0 * SampleShadowMap(baseUv, u2, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        sum += uw0 * vw1 * SampleShadowMap(baseUv, u0, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw1 * SampleShadowMap(baseUv, u1, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw1 * SampleShadowMap(baseUv, u2, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        sum += uw0 * vw2 * SampleShadowMap(baseUv, u0, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw2 * SampleShadowMap(baseUv, u1, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw2 * SampleShadowMap(baseUv, u2, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        return sum * 1.0f / 144;
+    }
+    else // filterSize == 7
+    {
+        float uw0 = (5 * s - 6);
+        float uw1 = (11 * s - 28);
+        float uw2 = -(11 * s + 17);
+        float uw3 = -(5 * s + 1);
+
+        float u0 = (4 * s - 5) / uw0 - 3;
+        float u1 = (4 * s - 16) / uw1 - 1;
+        float u2 = -(7 * s + 5) / uw2 + 1;
+        float u3 = -s / uw3 + 3;
+
+        float vw0 = (5 * t - 6);
+        float vw1 = (11 * t - 28);
+        float vw2 = -(11 * t + 17);
+        float vw3 = -(5 * t + 1);
+
+        float v0 = (4 * t - 5) / vw0 - 3;
+        float v1 = (4 * t - 16) / vw1 - 1;
+        float v2 = -(7 * t + 5) / vw2 + 1;
+        float v3 = -t / vw3 + 3;
+
+        sum += uw0 * vw0 * SampleShadowMap(baseUv, u0, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw0 * SampleShadowMap(baseUv, u1, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw0 * SampleShadowMap(baseUv, u2, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw3 * vw0 * SampleShadowMap(baseUv, u3, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        sum += uw0 * vw1 * SampleShadowMap(baseUv, u0, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw1 * SampleShadowMap(baseUv, u1, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw1 * SampleShadowMap(baseUv, u2, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw3 * vw1 * SampleShadowMap(baseUv, u3, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        sum += uw0 * vw2 * SampleShadowMap(baseUv, u0, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw2 * SampleShadowMap(baseUv, u1, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw2 * SampleShadowMap(baseUv, u2, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw3 * vw2 * SampleShadowMap(baseUv, u3, v2, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        sum += uw0 * vw3 * SampleShadowMap(baseUv, u0, v3, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw3 * SampleShadowMap(baseUv, u1, v3, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw2 * vw3 * SampleShadowMap(baseUv, u2, v3, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw3 * vw3 * SampleShadowMap(baseUv, u3, v3, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        return sum * 1.0f / 2704;
     }
 }
 
@@ -292,6 +363,26 @@ float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter3x3(PSInput input) : COLOR
     return PSMesh(input, true, false, 3);
 }
 
+float4 PSMeshVisualizeFalseFilterFalseFilterSizeFilter5x5(PSInput input) : COLOR
+{
+    return PSMesh(input, false, false, 5);
+}
+
+float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter5x5(PSInput input) : COLOR
+{
+    return PSMesh(input, true, false, 5);
+}
+
+float4 PSMeshVisualizeFalseFilterFalseFilterSizeFilter7x7(PSInput input) : COLOR
+{
+    return PSMesh(input, false, false, 7);
+}
+
+float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter7x7(PSInput input) : COLOR
+{
+    return PSMesh(input, true, false, 7);
+}
+
 // Techniques.
 
 #define VS_PROFILE vs_5_0
@@ -330,5 +421,41 @@ technique VisualizeTrueFilterFalseFilterSizeFilter3x3
     {
         VertexShader = compile VS_PROFILE VSMesh();
         PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterFalseFilterSizeFilter3x3();
+    }
+}
+
+technique VisualizeFalseFilterFalseFilterSizeFilter5x5
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterFalseFilterSizeFilter5x5();
+    }
+}
+
+technique VisualizeTrueFilterFalseFilterSizeFilter5x5
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterFalseFilterSizeFilter5x5();
+    }
+}
+
+technique VisualizeFalseFilterFalseFilterSizeFilter7x7
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterFalseFilterSizeFilter7x7();
+    }
+}
+
+technique VisualizeTrueFilterFalseFilterSizeFilter7x7
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterFalseFilterSizeFilter7x7();
     }
 }
