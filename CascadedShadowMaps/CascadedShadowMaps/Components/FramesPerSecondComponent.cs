@@ -50,10 +50,10 @@ namespace ShadowsSample.Components
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_spriteFont, "Frames per second: " + _fpsString,
                 new Vector2(10, 10),
-                Color.Black);
+                Color.White);
             _spriteBatch.DrawString(_spriteFont, "Frame time: " + _frameTimeString,
                 new Vector2(10, 30),
-                Color.Black);
+                Color.White);
             _spriteBatch.End();
         }
     }

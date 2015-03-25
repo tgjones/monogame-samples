@@ -40,8 +40,8 @@ namespace ShadowsSample.Components
             Bias = 0.005f;
             OffsetScale = 0.0f;
 
-            StabilizeCascades = true;
-            VisualizeCascades = true;
+            StabilizeCascades = false;
+            VisualizeCascades = false;
 
             SplitDistance0 = 0.05f;
             SplitDistance1 = 0.15f;
@@ -69,6 +69,12 @@ namespace ShadowsSample.Components
                     FixedFilterSize = FixedFilterSize.Filter2x2;
             }
 
+            if (keyboardState.IsKeyDown(Keys.C) && !_lastKeyboardState.IsKeyDown(Keys.C))
+                StabilizeCascades = !StabilizeCascades;
+
+            if (keyboardState.IsKeyDown(Keys.V) && !_lastKeyboardState.IsKeyDown(Keys.V))
+                VisualizeCascades = !VisualizeCascades;
+
             _lastKeyboardState = keyboardState;
         }
 
@@ -77,10 +83,16 @@ namespace ShadowsSample.Components
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_spriteFont, "Animate light? " + AnimateLight + " (L)",
                 new Vector2(10, 70),
-                Color.Red);
+                Color.LightBlue);
             _spriteBatch.DrawString(_spriteFont, "Filter size: " + FixedFilterSize + " (K)",
-                new Vector2(10, 90),
-                Color.Red);
+                new Vector2(10, 95),
+                Color.LightBlue);
+            _spriteBatch.DrawString(_spriteFont, "Stabilize cascades? " + StabilizeCascades + " (C)",
+                new Vector2(10, 120),
+                Color.LightBlue);
+            _spriteBatch.DrawString(_spriteFont, "Visualize cascades? " + StabilizeCascades + " (V)",
+                new Vector2(10, 145),
+                Color.LightBlue);
             _spriteBatch.End();
         }
     }
