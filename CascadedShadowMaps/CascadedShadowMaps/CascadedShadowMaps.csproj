@@ -42,6 +42,9 @@
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Cameras\Camera.cs" />
     <Compile Include="Cameras\OrthographicCamera.cs" />
@@ -77,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="Content\GameFont.spritefont" />
     <Content Include="Content\models\village_house_obj.mtl" />
     <Content Include="Content\models\village_house_obj.obj" />

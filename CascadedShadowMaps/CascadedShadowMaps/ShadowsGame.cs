@@ -23,8 +23,8 @@ namespace ShadowsSample
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1280;
 
             //graphics.SynchronizeWithVerticalRetrace = false;
             //IsFixedTimeStep = false;
