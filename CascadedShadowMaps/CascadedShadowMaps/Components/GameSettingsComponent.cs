@@ -62,6 +62,13 @@ namespace ShadowsSample.Components
             if (keyboardState.IsKeyDown(Keys.L) && !_lastKeyboardState.IsKeyDown(Keys.L))
                 AnimateLight = !AnimateLight;
 
+            if (keyboardState.IsKeyDown(Keys.K) && !_lastKeyboardState.IsKeyDown(Keys.K))
+            {
+                FixedFilterSize++;
+                if (FixedFilterSize > FixedFilterSize.Filter9x9)
+                    FixedFilterSize = FixedFilterSize.Filter2x2;
+            }
+
             _lastKeyboardState = keyboardState;
         }
 
@@ -70,6 +77,9 @@ namespace ShadowsSample.Components
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_spriteFont, "Animate light? " + AnimateLight + " (L)",
                 new Vector2(10, 70),
+                Color.Red);
+            _spriteBatch.DrawString(_spriteFont, "Filter size: " + FixedFilterSize + " (K)",
+                new Vector2(10, 90),
                 Color.Red);
             _spriteBatch.End();
         }

@@ -55,6 +55,7 @@
     <Compile Include="ShadowsGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\RasterizerStateUtility.cs" />
     <Compile Include="Util\SamplerStateUtility.cs" />
     <Compile Include="Util\Vector4Utility.cs" />
   </ItemGroup>

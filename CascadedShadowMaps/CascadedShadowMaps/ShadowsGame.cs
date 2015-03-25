@@ -158,11 +158,11 @@ namespace ShadowsSample
 
             _meshRenderer.Render(GraphicsDevice, _camera, Matrix.Identity);
 
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_meshRenderer.ShadowMap,
-                new Rectangle(Window.ClientBounds.Width - 10 - 800, 10, 800, 200),
-                Color.White);
-            _spriteBatch.End();
+            //_spriteBatch.Begin();
+            //_spriteBatch.Draw(_meshRenderer.ShadowMap,
+            //    new Rectangle(Window.ClientBounds.Width - 10 - 800, 10, 800, 200),
+            //    Color.White);
+            //_spriteBatch.End();
 
             base.Draw(gameTime);
         }

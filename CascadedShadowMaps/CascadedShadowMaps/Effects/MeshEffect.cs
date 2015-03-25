@@ -65,9 +65,7 @@ namespace ShadowsSample.Effects
 
         public void Apply()
         {
-            var techniqueName = "Visualize" + VisualizeCascades
-                                + "Filter" + FilterAcrossCascades
-                                + "FilterSize" + FilterSize;
+            var techniqueName = "Visualize" + VisualizeCascades + "Filter" + FilterAcrossCascades + "FilterSize" + FilterSize;
             _innerEffect.CurrentTechnique = _innerEffect.Techniques[techniqueName];
 
             _cameraPosWSParameter.SetValue(CameraPosWS);

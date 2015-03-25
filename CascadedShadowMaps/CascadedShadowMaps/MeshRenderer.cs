@@ -60,10 +60,11 @@ namespace ShadowsSample
                 _shadowMap.Dispose();
 
             _shadowMap = new RenderTarget2D(_graphicsDevice,
-                ShadowMapSize * NumCascades, ShadowMapSize,
+                ShadowMapSize, ShadowMapSize,
                 false, SurfaceFormat.Single, 
                 DepthFormat.Depth24, 1, 
-                RenderTargetUsage.DiscardContents);
+                RenderTargetUsage.DiscardContents,
+                false, NumCascades);
         }
 
         public void RenderShadowMap(GraphicsDevice graphicsDevice, Camera camera, Matrix worldMatrix)
@@ -77,18 +78,12 @@ namespace ShadowsSample
             var globalShadowMatrix = MakeGlobalShadowMatrix(camera);
             _meshEffect.ShadowMatrix = globalShadowMatrix;
 
-            // Set the shadow map as the render target
-            graphicsDevice.SetRenderTarget(_shadowMap);
-            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-
             // Render the meshes to each cascade.
             for (var cascadeIdx = 0; cascadeIdx < NumCascades; ++cascadeIdx)
             {
-                // Set the viewport
-                graphicsDevice.Viewport = new Viewport(
-                    cascadeIdx * ShadowMapSize, 0, 
-                    ShadowMapSize, ShadowMapSize,
-                    0.0f, 1.0f);
+                // Set the shadow map as the render target
+                graphicsDevice.SetRenderTarget(_shadowMap, cascadeIdx);
+                graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                 // Get the 8 points of the view frustum in world space
                 ResetViewFrustumCorners();
@@ -101,14 +96,9 @@ namespace ShadowsSample
                     _frustumCorners[i] = Vector4.Transform(_frustumCorners[i], invViewProj).ToVector3();
 
                 // Get the corners of the current cascade slice of the view frustum
-                var centralRay = Vector3.Normalize(
-                    ((_frustumCorners[4] + _frustumCorners[5] + _frustumCorners[6] + _frustumCorners[7]) / 4.0f)
-                    - ((_frustumCorners[0] + _frustumCorners[1] + _frustumCorners[2] + _frustumCorners[3]) / 4.0f));
                 for (var i = 0; i < 4; ++i)
                 {
                     var cornerRay = _frustumCorners[i + 4] - _frustumCorners[i];
-                    //var nearCornerRay = cornerRay * Vector3.Dot(Vector3.Normalize(cornerRay), centralRay * prevSplitDist);
-                    //var farCornerRay = cornerRay * Vector3.Dot(Vector3.Normalize(cornerRay), centralRay * splitDist);
                     var nearCornerRay = cornerRay * prevSplitDist;
                     var farCornerRay = cornerRay * splitDist;
                     _frustumCorners[i + 4] = _frustumCorners[i] + farCornerRay;
@@ -295,7 +285,7 @@ namespace ShadowsSample
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             graphicsDevice.RasterizerState = shadowRendering
-                ? RasterizerState.CullNone
+                ? RasterizerStateUtility.CreateShadowMap
                 : RasterizerState.CullCounterClockwise;
 
             foreach (var mesh in _scene.Meshes)

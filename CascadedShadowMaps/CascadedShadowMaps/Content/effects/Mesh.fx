@@ -20,7 +20,7 @@ float OffsetScale;
 
 // Resources.
 
-Texture2D ShadowMap : register(t0);
+Texture2DArray ShadowMap : register(t0);
 
 SamplerComparisonState ShadowSampler : register(s0);
 
@@ -71,15 +71,23 @@ VSOutput VSMesh(VSInput input)
 
 // Pixel shader.
 
+float SampleShadowMap(
+    float2 baseUv, float u, float v, float2 shadowMapSizeInv,
+    uint cascadeIdx, float depth)
+{
+    float2 uv = baseUv + float2(u, v) * shadowMapSizeInv;
+    float z = depth;
+
+    return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIdx), z);
+}
+
 float SampleShadowMapOptimizedPCF(float3 shadowPos, 
     float3 shadowPosDX, float3 shadowPosDY,
     uint cascadeIdx, uint filterSize)
 {
     float2 shadowMapSize;
-    ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y);
-
-    // Shadow maps are packed into a single, "wide", texture.
-    shadowMapSize.x /= NumCascades;
+    float numSlices;
+    ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y, numSlices);
 
     float lightDepth = shadowPos.z;
 
@@ -105,9 +113,28 @@ float SampleShadowMapOptimizedPCF(float3 shadowPos,
 
     if (filterSize == 2)
     {
-        shadowPos.x /= NumCascades;
-        shadowPos.x += (1.0f / NumCascades) * cascadeIdx;
-        return ShadowMap.SampleCmpLevelZero(ShadowSampler, shadowPos.xy, lightDepth);
+        return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(shadowPos.xy, cascadeIdx), lightDepth);
+    }
+    else if (filterSize == 3)
+    {
+        float uw0 = (3 - 2 * s);
+        float uw1 = (1 + 2 * s);
+
+        float u0 = (2 - s) / uw0 - 1;
+        float u1 = s / uw1 + 1;
+
+        float vw0 = (3 - 2 * t);
+        float vw1 = (1 + 2 * t);
+
+        float v0 = (2 - t) / vw0 - 1;
+        float v1 = t / vw1 + 1;
+
+        sum += uw0 * vw0 * SampleShadowMap(baseUv, u0, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw0 * SampleShadowMap(baseUv, u1, v0, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw0 * vw1 * SampleShadowMap(baseUv, u0, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+        sum += uw1 * vw1 * SampleShadowMap(baseUv, u1, v1, shadowMapSizeInv, cascadeIdx, lightDepth);
+
+        return sum * 1.0f / 16;
     }
     else
     {
@@ -154,7 +181,9 @@ float3 SampleShadowCascade(
 float3 GetShadowPosOffset(float nDotL, float3 normal)
 {
     float2 shadowMapSize;
-    ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y);
+    float numSlices;
+    ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y, numSlices);
+
     float texelSize = 2.0f / shadowMapSize.x;
     float nmlOffsetScale = saturate(1.0f - nDotL);
     return texelSize * OffsetScale * nmlOffsetScale * normal;
@@ -253,14 +282,27 @@ float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter2x2(PSInput input) : COLOR
     return PSMesh(input, true, false, 2);
 }
 
+float4 PSMeshVisualizeFalseFilterFalseFilterSizeFilter3x3(PSInput input) : COLOR
+{
+    return PSMesh(input, false, false, 3);
+}
+
+float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter3x3(PSInput input) : COLOR
+{
+    return PSMesh(input, true, false, 3);
+}
+
 // Techniques.
+
+#define VS_PROFILE vs_5_0
+#define PS_PROFILE ps_5_0
 
 technique VisualizeFalseFilterFalseFilterSizeFilter2x2
 {
     pass
     {
-        VertexShader = compile vs_4_0 VSMesh();
-        PixelShader = compile ps_4_0 PSMeshVisualizeFalseFilterFalseFilterSizeFilter2x2();
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterFalseFilterSizeFilter2x2();
     }
 }
 
@@ -268,7 +310,25 @@ technique VisualizeTrueFilterFalseFilterSizeFilter2x2
 {
     pass
     {
-        VertexShader = compile vs_4_0 VSMesh();
-        PixelShader = compile ps_4_0 PSMeshVisualizeTrueFilterFalseFilterSizeFilter2x2();
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterFalseFilterSizeFilter2x2();
+    }
+}
+
+technique VisualizeFalseFilterFalseFilterSizeFilter3x3
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterFalseFilterSizeFilter3x3();
+    }
+}
+
+technique VisualizeTrueFilterFalseFilterSizeFilter3x3
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterFalseFilterSizeFilter3x3();
     }
 }
