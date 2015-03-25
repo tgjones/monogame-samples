@@ -24,10 +24,10 @@ namespace ShadowsSample
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1280;
+            graphics.PreferredBackBufferHeight = 1200;
 
-            //graphics.SynchronizeWithVerticalRetrace = false;
-            //IsFixedTimeStep = false;
+            graphics.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
         }

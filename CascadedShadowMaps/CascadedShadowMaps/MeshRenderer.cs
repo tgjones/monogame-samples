@@ -29,6 +29,8 @@ namespace ShadowsSample
         private readonly ShadowMapEffect _shadowMapEffect;
         private readonly MeshEffect _meshEffect;
 
+        private readonly BoundingFrustum _boundingFrustum;
+
         public Texture2D ShadowMap
         {
             get { return _shadowMap; }
@@ -50,6 +52,8 @@ namespace ShadowsSample
 
             _shadowMapEffect = new ShadowMapEffect(graphicsDevice, contentManager.Load<Effect>("effects/ShadowMap"));
             _meshEffect = new MeshEffect(graphicsDevice, contentManager.Load<Effect>("effects/Mesh"));
+
+            _boundingFrustum = new BoundingFrustum(Matrix.Identity);
 
             CreateShadowMaps();
         }
@@ -288,13 +292,14 @@ namespace ShadowsSample
                 ? RasterizerStateUtility.CreateShadowMap
                 : RasterizerState.CullCounterClockwise;
 
+            var worldViewProjection = worldMatrix * camera.ViewProjection;
+
             foreach (var mesh in _scene.Meshes)
+            {
                 foreach (var meshPart in mesh.MeshParts)
                     if (meshPart.PrimitiveCount > 0)
                     {
-                        _shadowMapEffect.WorldViewProjection = 
-                            _sceneTransforms[mesh.ParentBone.Index] * worldMatrix
-                            * camera.ViewProjection;
+                        _shadowMapEffect.WorldViewProjection = _sceneTransforms[mesh.ParentBone.Index] * worldViewProjection;
                         _shadowMapEffect.Apply();
 
                         graphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
@@ -305,6 +310,7 @@ namespace ShadowsSample
                             meshPart.VertexOffset, 0, meshPart.NumVertices,
                             meshPart.StartIndex, meshPart.PrimitiveCount);
                     }
+            }
         }
 
         public void Render(GraphicsDevice graphicsDevice, Camera camera, Matrix worldMatrix)
@@ -331,8 +337,14 @@ namespace ShadowsSample
             _meshEffect.LightDirection = _settings.LightDirection;
             _meshEffect.LightColor = _settings.LightColor;
 
+            _boundingFrustum.Matrix = camera.ViewProjection;
+
             // Draw all meshes.
             foreach (var mesh in _scene.Meshes)
+            {
+                if (!_boundingFrustum.Intersects(mesh.BoundingSphere))
+                    continue;
+
                 foreach (var meshPart in mesh.MeshParts)
                     if (meshPart.PrimitiveCount > 0)
                     {
@@ -350,6 +362,7 @@ namespace ShadowsSample
                             meshPart.VertexOffset, 0, meshPart.NumVertices,
                             meshPart.StartIndex, meshPart.PrimitiveCount);
                     }
+            }
         }
     }
 }
