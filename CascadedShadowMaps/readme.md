@@ -1,6 +1,7 @@
 # Cascaded Shadow Maps
 
-![](screenshot.png)
+![](screenshot1.png)
+![](screenshot2.png)
 
 This is a MonoGame port of Matt Pattineo's Shadows Sample:  
 https://mynameismjp.wordpress.com/2013/09/10/shadow-maps/
