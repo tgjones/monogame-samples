@@ -185,11 +185,11 @@ namespace ShadowsSample
                     var shadowMatrixTemp = shadowCamera.ViewProjection;
                     var shadowOrigin = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
                     shadowOrigin = Vector4.Transform(shadowOrigin, shadowMatrixTemp);
-                    shadowOrigin = shadowOrigin * (ShadowMapSize * NumCascades / 2.0f);
+                    shadowOrigin = shadowOrigin * (ShadowMapSize / 2.0f);
 
                     var roundedOrigin = Vector4Utility.Round(shadowOrigin);
                     var roundOffset = roundedOrigin - shadowOrigin;
-                    roundOffset = roundOffset * (2.0f / ShadowMapSize * NumCascades);
+                    roundOffset = roundOffset * (2.0f / ShadowMapSize);
                     roundOffset.Z = 0.0f;
                     roundOffset.W = 0.0f;
 
