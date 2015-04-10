@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -37,7 +38,7 @@ namespace ShadowsSample.Components
         {
             LightDirection = Vector3.Normalize(new Vector3(1, 1, -1));
             LightColor = new Vector3(3, 3, 3);
-            Bias = 0.005f;
+            Bias = 0.001f;
             OffsetScale = 0.0f;
 
             StabilizeCascades = false;
@@ -78,6 +79,34 @@ namespace ShadowsSample.Components
             if (keyboardState.IsKeyDown(Keys.K) && !_lastKeyboardState.IsKeyDown(Keys.K))
                 FilterAcrossCascades = !FilterAcrossCascades;
 
+            if (keyboardState.IsKeyDown(Keys.B) && !_lastKeyboardState.IsKeyDown(Keys.B))
+            {
+                if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
+                {
+                    Bias += 0.001f;
+                }
+                else
+                {
+                    Bias -= 0.001f;
+                    Bias = Math.Max(Bias, 0.0f);
+                }
+                Bias = (float) Math.Round(Bias, 3);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.O) && !_lastKeyboardState.IsKeyDown(Keys.O))
+            {
+                if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
+                {
+                    OffsetScale += 0.1f;
+                }
+                else
+                {
+                    OffsetScale -= 0.1f;
+                    OffsetScale = Math.Max(OffsetScale, 0.0f);
+                }
+                OffsetScale = (float) Math.Round(OffsetScale, 1);
+            }
+
             _lastKeyboardState = keyboardState;
         }
 
@@ -98,6 +127,12 @@ namespace ShadowsSample.Components
                 Color.LightBlue);
             _spriteBatch.DrawString(_spriteFont, "Filter across cascades? " + FilterAcrossCascades + " (K)",
                 new Vector2(10, 170),
+                Color.LightBlue);
+            _spriteBatch.DrawString(_spriteFont, "Bias: " + Bias + " (b / B)",
+                new Vector2(10, 195),
+                Color.LightBlue);
+            _spriteBatch.DrawString(_spriteFont, "Normal offset: " + OffsetScale + " (o / O)",
+                new Vector2(10, 220),
                 Color.LightBlue);
             _spriteBatch.End();
         }
