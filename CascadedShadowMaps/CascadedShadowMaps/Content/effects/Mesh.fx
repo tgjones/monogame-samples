@@ -383,6 +383,46 @@ float4 PSMeshVisualizeTrueFilterFalseFilterSizeFilter7x7(PSInput input) : COLOR
     return PSMesh(input, true, false, 7);
 }
 
+float4 PSMeshVisualizeFalseFilterTrueFilterSizeFilter2x2(PSInput input) : COLOR
+{
+    return PSMesh(input, false, true, 2);
+}
+
+float4 PSMeshVisualizeTrueFilterTrueFilterSizeFilter2x2(PSInput input) : COLOR
+{
+    return PSMesh(input, true, true, 2);
+}
+
+float4 PSMeshVisualizeFalseFilterTrueFilterSizeFilter3x3(PSInput input) : COLOR
+{
+    return PSMesh(input, false, true, 3);
+}
+
+float4 PSMeshVisualizeTrueFilterTrueFilterSizeFilter3x3(PSInput input) : COLOR
+{
+    return PSMesh(input, true, true, 3);
+}
+
+float4 PSMeshVisualizeFalseFilterTrueFilterSizeFilter5x5(PSInput input) : COLOR
+{
+    return PSMesh(input, false, true, 5);
+}
+
+float4 PSMeshVisualizeTrueFilterTrueFilterSizeFilter5x5(PSInput input) : COLOR
+{
+    return PSMesh(input, true, true, 5);
+}
+
+float4 PSMeshVisualizeFalseFilterTrueFilterSizeFilter7x7(PSInput input) : COLOR
+{
+    return PSMesh(input, false, true, 7);
+}
+
+float4 PSMeshVisualizeTrueFilterTrueFilterSizeFilter7x7(PSInput input) : COLOR
+{
+    return PSMesh(input, true, true, 7);
+}
+
 // Techniques.
 
 #define VS_PROFILE vs_5_0
@@ -457,5 +497,77 @@ technique VisualizeTrueFilterFalseFilterSizeFilter7x7
     {
         VertexShader = compile VS_PROFILE VSMesh();
         PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterFalseFilterSizeFilter7x7();
+    }
+}
+
+technique VisualizeFalseFilterTrueFilterSizeFilter2x2
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterTrueFilterSizeFilter2x2();
+    }
+}
+
+technique VisualizeTrueFilterTrueFilterSizeFilter2x2
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterTrueFilterSizeFilter2x2();
+    }
+}
+
+technique VisualizeFalseFilterTrueFilterSizeFilter3x3
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterTrueFilterSizeFilter3x3();
+    }
+}
+
+technique VisualizeTrueFilterTrueFilterSizeFilter3x3
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterTrueFilterSizeFilter3x3();
+    }
+}
+
+technique VisualizeFalseFilterTrueFilterSizeFilter5x5
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterTrueFilterSizeFilter5x5();
+    }
+}
+
+technique VisualizeTrueFilterTrueFilterSizeFilter5x5
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterTrueFilterSizeFilter5x5();
+    }
+}
+
+technique VisualizeFalseFilterTrueFilterSizeFilter7x7
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeFalseFilterTrueFilterSizeFilter7x7();
+    }
+}
+
+technique VisualizeTrueFilterTrueFilterSizeFilter7x7
+{
+    pass
+    {
+        VertexShader = compile VS_PROFILE VSMesh();
+        PixelShader = compile PS_PROFILE PSMeshVisualizeTrueFilterTrueFilterSizeFilter7x7();
     }
 }

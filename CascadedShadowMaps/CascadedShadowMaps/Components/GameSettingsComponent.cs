@@ -62,7 +62,7 @@ namespace ShadowsSample.Components
             if (keyboardState.IsKeyDown(Keys.L) && !_lastKeyboardState.IsKeyDown(Keys.L))
                 AnimateLight = !AnimateLight;
 
-            if (keyboardState.IsKeyDown(Keys.K) && !_lastKeyboardState.IsKeyDown(Keys.K))
+            if (keyboardState.IsKeyDown(Keys.F) && !_lastKeyboardState.IsKeyDown(Keys.F))
             {
                 FixedFilterSize++;
                 if (FixedFilterSize > FixedFilterSize.Filter7x7)
@@ -75,6 +75,9 @@ namespace ShadowsSample.Components
             if (keyboardState.IsKeyDown(Keys.V) && !_lastKeyboardState.IsKeyDown(Keys.V))
                 VisualizeCascades = !VisualizeCascades;
 
+            if (keyboardState.IsKeyDown(Keys.K) && !_lastKeyboardState.IsKeyDown(Keys.K))
+                FilterAcrossCascades = !FilterAcrossCascades;
+
             _lastKeyboardState = keyboardState;
         }
 
@@ -84,7 +87,7 @@ namespace ShadowsSample.Components
             _spriteBatch.DrawString(_spriteFont, "Animate light? " + AnimateLight + " (L)",
                 new Vector2(10, 70),
                 Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Filter size: " + FixedFilterSize + " (K)",
+            _spriteBatch.DrawString(_spriteFont, "Filter size: " + FixedFilterSize + " (F)",
                 new Vector2(10, 95),
                 Color.LightBlue);
             _spriteBatch.DrawString(_spriteFont, "Stabilize cascades? " + StabilizeCascades + " (C)",
@@ -92,6 +95,9 @@ namespace ShadowsSample.Components
                 Color.LightBlue);
             _spriteBatch.DrawString(_spriteFont, "Visualize cascades? " + StabilizeCascades + " (V)",
                 new Vector2(10, 145),
+                Color.LightBlue);
+            _spriteBatch.DrawString(_spriteFont, "Filter across cascades? " + FilterAcrossCascades + " (K)",
+                new Vector2(10, 170),
                 Color.LightBlue);
             _spriteBatch.End();
         }
