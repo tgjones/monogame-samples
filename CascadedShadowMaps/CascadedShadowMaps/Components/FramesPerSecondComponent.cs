@@ -2,7 +2,7 @@
 
 namespace ShadowsSample.Components
 {
-    public class FramesPerSecondComponent : GuiComponent
+    public class FramesPerSecondComponent : DrawableGameComponent
     {
         private double _accumulatedTime;
         private int _frames;
@@ -11,10 +11,18 @@ namespace ShadowsSample.Components
         private string _fpsString = string.Empty;
         private string _frameTimeString = string.Empty;
 
+        private IGuiService _guiService;
+
         public FramesPerSecondComponent(Game game)
-            : base(game, 10, Color.FromNonPremultiplied(0, 0, 0, 150))
+            : base(game)
         {
             _timeLeft = 1.0;
+        }
+
+        public override void Initialize()
+        {
+            _guiService = Game.Services.GetService<IGuiService>();
+            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
@@ -37,11 +45,11 @@ namespace ShadowsSample.Components
 
         public override void Draw(GameTime gameTime)
         {
-            DrawLabels(new[]
+            _guiService.DrawLabels(new[]
             {
-                new LabelData { Name = "Frames per second", Value = _fpsString }, 
-                new LabelData { Name = "Frame time", Value = _frameTimeString }
-            });
+                new GuiComponent.GuiLabelData { Name = "Frames per second", Value = _fpsString }, 
+                new GuiComponent.GuiLabelData { Name = "Frame time", Value = _frameTimeString }
+            }, Color.FromNonPremultiplied(0, 0, 0, 150));
         }
     }
 }

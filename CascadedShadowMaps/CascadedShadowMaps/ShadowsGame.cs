@@ -47,6 +47,10 @@ namespace ShadowsSample
             Components.Add(new FramesPerSecondComponent(this));
             Components.Add(_gameSettings = new GameSettingsComponent(this));
 
+            var guiService = new GuiComponent(this);
+            Components.Add(guiService);
+            Services.AddService<IGuiService>(guiService);
+
             base.Initialize();
         }
 
@@ -157,6 +161,12 @@ namespace ShadowsSample
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _meshRenderer.Render(GraphicsDevice, _camera, Matrix.Identity);
+
+            Services.GetService<IGuiService>().DrawLabels(new[]
+            {
+                new GuiComponent.GuiLabelData { Name = "W, A, S, D, Q, E to navigate", Value = string.Empty },
+                new GuiComponent.GuiLabelData { Name = "Right-click + mouse to aim", Value = string.Empty }
+            }, Color.FromNonPremultiplied(0, 100, 0, 150));
 
             //_spriteBatch.Begin();
             //_spriteBatch.Draw(_meshRenderer.ShadowMap,

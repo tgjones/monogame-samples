@@ -4,10 +4,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShadowsSample.Components
 {
-    public class GameSettingsComponent : GuiComponent
+    public class GameSettingsComponent : DrawableGameComponent
     {
-        private static readonly int[] KernelSizes = { 2, 3, 5, 7, 9 };
+        private static readonly int[] KernelSizes = { 2, 3, 5, 7 };
 
+        private IGuiService _guiService;
         private KeyboardState _lastKeyboardState;
 
         public bool AnimateLight;
@@ -30,7 +31,7 @@ namespace ShadowsSample.Components
         }
 
         public GameSettingsComponent(Game game)
-            : base(game, 90, Color.FromNonPremultiplied(100, 0, 0, 150))
+            : base(game)
         {
             LightDirection = Vector3.Normalize(new Vector3(1, 1, -1));
             LightColor = new Vector3(3, 3, 3);
@@ -44,6 +45,12 @@ namespace ShadowsSample.Components
             SplitDistance1 = 0.15f;
             SplitDistance2 = 0.50f;
             SplitDistance3 = 1.0f;
+        }
+
+        public override void Initialize()
+        {
+            _guiService = Game.Services.GetService<IGuiService>();
+            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
@@ -102,16 +109,16 @@ namespace ShadowsSample.Components
 
         public override void Draw(GameTime gameTime)
         {
-            DrawLabels(new[]
+            _guiService.DrawLabels(new[]
             {
-                new LabelData { Name = "Animate light? (L)", Value = AnimateLight.ToString() }, 
-                new LabelData { Name = "Filter size (F)", Value = FixedFilterSize.ToString() },
-                new LabelData { Name = "Stabilize cascades? (C)", Value = StabilizeCascades.ToString() }, 
-                new LabelData { Name = "Visualize cascades? (V)", Value = VisualizeCascades.ToString() },
-                new LabelData { Name = "Filter across cascades? (K)", Value = FilterAcrossCascades.ToString() }, 
-                new LabelData { Name = "Bias (b / B)", Value = Bias.ToString() },
-                new LabelData { Name = "Normal offset (o / O)", Value = OffsetScale.ToString() }
-            });
+                new GuiComponent.GuiLabelData { Name = "Animate light? (L)", Value = AnimateLight.ToString() }, 
+                new GuiComponent.GuiLabelData { Name = "Filter size (F)", Value = FixedFilterSize.ToString() },
+                new GuiComponent.GuiLabelData { Name = "Stabilize cascades? (C)", Value = StabilizeCascades.ToString() }, 
+                new GuiComponent.GuiLabelData { Name = "Visualize cascades? (V)", Value = VisualizeCascades.ToString() },
+                new GuiComponent.GuiLabelData { Name = "Filter across cascades? (K)", Value = FilterAcrossCascades.ToString() }, 
+                new GuiComponent.GuiLabelData { Name = "Bias (b / B)", Value = Bias.ToString() },
+                new GuiComponent.GuiLabelData { Name = "Normal offset (o / O)", Value = OffsetScale.ToString() }
+            }, Color.FromNonPremultiplied(100, 0, 0, 150));
         }
     }
 
