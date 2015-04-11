@@ -49,7 +49,7 @@ namespace ShadowsSample.Components
             {
                 new GuiComponent.GuiLabelData { Name = "Frames per second", Value = _fpsString }, 
                 new GuiComponent.GuiLabelData { Name = "Frame time", Value = _frameTimeString }
-            }, Color.FromNonPremultiplied(0, 0, 0, 150));
+            }, Color.FromNonPremultiplied(0, 0, 100, 150));
         }
     }
 }
