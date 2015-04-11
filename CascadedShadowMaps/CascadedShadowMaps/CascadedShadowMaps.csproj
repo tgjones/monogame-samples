@@ -52,6 +52,7 @@
     <Compile Include="Components\FramesPerSecondComponent.cs" />
     <Compile Include="Cameras\FirstPersonCamera.cs" />
     <Compile Include="Components\GameSettingsComponent.cs" />
+    <Compile Include="Components\GuiComponent.cs" />
     <Compile Include="Effects\MeshEffect.cs" />
     <Compile Include="MeshRenderer.cs" />
     <Compile Include="Effects\ShadowMapEffect.cs" />

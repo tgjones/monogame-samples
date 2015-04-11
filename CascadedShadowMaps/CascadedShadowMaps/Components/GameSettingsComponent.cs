@@ -1,16 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace ShadowsSample.Components
 {
-    public class GameSettingsComponent : DrawableGameComponent
+    public class GameSettingsComponent : GuiComponent
     {
         private static readonly int[] KernelSizes = { 2, 3, 5, 7, 9 };
-
-        private SpriteBatch _spriteBatch;
-        private SpriteFont _spriteFont;
 
         private KeyboardState _lastKeyboardState;
 
@@ -34,11 +30,11 @@ namespace ShadowsSample.Components
         }
 
         public GameSettingsComponent(Game game)
-            : base(game)
+            : base(game, 90, Color.FromNonPremultiplied(100, 0, 0, 150))
         {
             LightDirection = Vector3.Normalize(new Vector3(1, 1, -1));
             LightColor = new Vector3(3, 3, 3);
-            Bias = 0.001f;
+            Bias = 0.002f;
             OffsetScale = 0.0f;
 
             StabilizeCascades = false;
@@ -48,12 +44,6 @@ namespace ShadowsSample.Components
             SplitDistance1 = 0.15f;
             SplitDistance2 = 0.50f;
             SplitDistance3 = 1.0f;
-        }
-
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteFont = Game.Content.Load<SpriteFont>("GameFont");
         }
 
         public override void Update(GameTime gameTime)
@@ -112,29 +102,16 @@ namespace ShadowsSample.Components
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.DrawString(_spriteFont, "Animate light? " + AnimateLight + " (L)",
-                new Vector2(10, 70),
-                Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Filter size: " + FixedFilterSize + " (F)",
-                new Vector2(10, 95),
-                Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Stabilize cascades? " + StabilizeCascades + " (C)",
-                new Vector2(10, 120),
-                Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Visualize cascades? " + StabilizeCascades + " (V)",
-                new Vector2(10, 145),
-                Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Filter across cascades? " + FilterAcrossCascades + " (K)",
-                new Vector2(10, 170),
-                Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Bias: " + Bias + " (b / B)",
-                new Vector2(10, 195),
-                Color.LightBlue);
-            _spriteBatch.DrawString(_spriteFont, "Normal offset: " + OffsetScale + " (o / O)",
-                new Vector2(10, 220),
-                Color.LightBlue);
-            _spriteBatch.End();
+            DrawLabels(new[]
+            {
+                new LabelData { Name = "Animate light? (L)", Value = AnimateLight.ToString() }, 
+                new LabelData { Name = "Filter size (F)", Value = FixedFilterSize.ToString() },
+                new LabelData { Name = "Stabilize cascades? (C)", Value = StabilizeCascades.ToString() }, 
+                new LabelData { Name = "Visualize cascades? (V)", Value = VisualizeCascades.ToString() },
+                new LabelData { Name = "Filter across cascades? (K)", Value = FilterAcrossCascades.ToString() }, 
+                new LabelData { Name = "Bias (b / B)", Value = Bias.ToString() },
+                new LabelData { Name = "Normal offset (o / O)", Value = OffsetScale.ToString() }
+            });
         }
     }
 

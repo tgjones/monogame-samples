@@ -1,30 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ShadowsSample.Components
 {
-    public class FramesPerSecondComponent : DrawableGameComponent
+    public class FramesPerSecondComponent : GuiComponent
     {
-        private SpriteBatch _spriteBatch;
-        private SpriteFont _spriteFont;
-
         private double _accumulatedTime;
         private int _frames;
         private double _timeLeft;
 
-        private string _fpsString;
-        private string _frameTimeString;
+        private string _fpsString = string.Empty;
+        private string _frameTimeString = string.Empty;
 
         public FramesPerSecondComponent(Game game)
-            : base(game)
+            : base(game, 10, Color.FromNonPremultiplied(0, 0, 0, 150))
         {
             _timeLeft = 1.0;
-        }
-
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteFont = Game.Content.Load<SpriteFont>("GameFont");
         }
 
         public override void Update(GameTime gameTime)
@@ -47,14 +37,11 @@ namespace ShadowsSample.Components
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.DrawString(_spriteFont, "Frames per second: " + _fpsString,
-                new Vector2(10, 10),
-                Color.White);
-            _spriteBatch.DrawString(_spriteFont, "Frame time: " + _frameTimeString,
-                new Vector2(10, 30),
-                Color.White);
-            _spriteBatch.End();
+            DrawLabels(new[]
+            {
+                new LabelData { Name = "Frames per second", Value = _fpsString }, 
+                new LabelData { Name = "Frame time", Value = _frameTimeString }
+            });
         }
     }
 }
