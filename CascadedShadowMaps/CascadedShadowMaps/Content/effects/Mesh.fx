@@ -29,8 +29,8 @@ SamplerComparisonState ShadowSampler : register(s0);
 struct VSInput
 {
     float3 PositionOS : SV_POSITION;
-    float3 Color      : COLOR;
     float3 NormalOS   : NORMAL;
+    float3 Uv         : TEXCOORD0;
 };
 
 struct VSOutput
