@@ -303,12 +303,10 @@ namespace ShadowsSample
                         _shadowMapEffect.Apply();
 
                         graphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
-                        graphicsDevice.Indices = meshPart.IndexBuffer;
+                        graphicsDevice.Indices = meshPart.IndexBuffer;                
 
-                        graphicsDevice.DrawIndexedPrimitives(
-                            PrimitiveType.TriangleList,
-                            meshPart.VertexOffset, 0, meshPart.NumVertices,
-                            meshPart.StartIndex, meshPart.PrimitiveCount);
+                        graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 
+                            meshPart.VertexOffset, 0, meshPart.PrimitiveCount);
                     }
             }
         }
@@ -357,10 +355,8 @@ namespace ShadowsSample
                         graphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
                         graphicsDevice.Indices = meshPart.IndexBuffer;
 
-                        graphicsDevice.DrawIndexedPrimitives(
-                            PrimitiveType.TriangleList,
-                            meshPart.VertexOffset, 0, meshPart.NumVertices,
-                            meshPart.StartIndex, meshPart.PrimitiveCount);
+                        graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 
+                            meshPart.VertexOffset, 0, meshPart.PrimitiveCount);
                     }
             }
         }
