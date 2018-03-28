@@ -25,7 +25,7 @@ namespace ShadowsSample
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1200;
-
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
             graphics.SynchronizeWithVerticalRetrace = false;
             IsFixedTimeStep = false;
 
@@ -171,7 +171,7 @@ namespace ShadowsSample
                 new GuiComponent.GuiLabelData { Name = "Right-click + mouse to aim", Value = string.Empty }
             }, Color.FromNonPremultiplied(0, 100, 0, 150));
 
-            //_spriteBatch.Begin();
+            //_spriteBatch.Begin();            
             //_spriteBatch.Draw(_meshRenderer.ShadowMap,
             //    new Rectangle(Window.ClientBounds.Width - 10 - 800, 10, 800, 200),
             //    Color.White);
